@@ -55,8 +55,8 @@ export default function SettingsPage() {
 
           <button
             className="
-            bg-violet-600
-            hover:bg-violet-700
+            bg-slate-700
+            hover:bg-slate-600
             px-5
             py-3
             rounded-xl

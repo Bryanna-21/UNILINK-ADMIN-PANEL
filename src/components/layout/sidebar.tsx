@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/store/auth.store";
 import {
   LayoutDashboard,
   Users,
@@ -51,6 +53,14 @@ const links = [
 ];
 
 export default function Sidebar() {
+  const router = useRouter();
+  const logout = useAuthStore((state) => state.logout);
+
+  const handleLogout = () => {
+    logout();
+    router.push("/login");
+  };
+
   return (
     <aside className="w-[270px] h-screen glass border-r border-white/10 p-6 fixed left-0 top-0">
       <div className="mb-10">
@@ -81,7 +91,7 @@ export default function Sidebar() {
         })}
       </nav>
 
-      <button className="sidebar-link mt-10 text-red-400">
+      <button onClick={handleLogout} className="sidebar-link mt-10 text-red-400">
         <LogOut size={20} />
         Logout
       </button>

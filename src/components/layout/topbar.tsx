@@ -20,7 +20,7 @@ export default function Topbar() {
         </button>
 
         <div className="flex items-center gap-3 glass px-4 py-2 rounded-xl">
-          <div className="w-10 h-10 rounded-full bg-violet-600 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center">
             A
           </div>
 

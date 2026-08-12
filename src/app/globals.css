@@ -9,7 +9,7 @@
   --card: rgba(255, 255, 255, 0.05);
   --border: rgba(255, 255, 255, 0.08);
 
-  --primary: #7c3aed;
+  --primary: #334155;
   --secondary: #06b6d4;
 }
 
@@ -21,7 +21,7 @@
 
 body {
   background:
-    radial-gradient(circle at top left, #1e1b4b 0%, #050816 45%);
+    radial-gradient(circle at top left, #172033 0%, #050816 45%);
     
   color: white;
   min-height: 100vh;

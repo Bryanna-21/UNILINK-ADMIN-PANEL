@@ -1,3 +1,5 @@
+"use client";
+
 interface Props {
   currentPage: number;
 
@@ -30,7 +32,7 @@ export default function Pagination({
 
             ${
               currentPage === i + 1
-                ? "bg-violet-600"
+                ? "bg-slate-700"
                 : "bg-white/10"
             }
           `}

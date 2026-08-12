@@ -46,7 +46,7 @@ export default function ActivityTimeline() {
                 w-3
                 h-3
                 rounded-full
-                bg-violet-500
+                bg-slate-600
                 mt-2
               "
               />

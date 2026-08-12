@@ -1,56 +1,45 @@
 "use client";
 
-import { useState } from "react";
-
-import { useRouter } from "next/navigation";
+import { Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import api from "@/lib/axios";
-
 import { useAuthStore } from "@/store/auth.store";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const { setAuth } =
-    useAuthStore();
+  const { setAuth } = useAuthStore();
 
-  const [email, setEmail] =
-    useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const [password, setPassword] =
-    useState("");
-
-  const [loading, setLoading] =
-    useState(false);
-
-  const [error, setError] =
-    useState("");
-
-  async function handleLogin(
-    e: React.FormEvent
-  ) {
+  async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
 
     try {
       setLoading(true);
-
       setError("");
 
-      const response =
-        await api.post(
-          "/admin/auth/login",
-          {
-            email,
-            password,
-          }
-        );
+      const response = await api.post("/admin/auth/login", {
+        email,
+        password,
+      });
 
-      const { user, accessToken } =
-        response.data;
+      const { user, accessToken } = response.data;
 
       setAuth(user, accessToken);
 
-      router.push("/dashboard");
+      const next = searchParams.get("next");
+
+      router.push(
+        next && next.startsWith("/")
+          ? next
+          : "/dashboard"
+      );
     } catch (err: any) {
       setError(
         err?.response?.data?.message ||
@@ -64,22 +53,22 @@ export default function LoginPage() {
   return (
     <div
       className="
-      min-h-screen
-      flex
-      items-center
-      justify-center
-      p-6
-    "
+        min-h-screen
+        flex
+        items-center
+        justify-center
+        p-6
+      "
     >
       <form
         onSubmit={handleLogin}
         className="
-        glass
-        w-full
-        max-w-[420px]
-        rounded-3xl
-        p-8
-      "
+          glass
+          w-full
+          max-w-[420px]
+          rounded-3xl
+          p-8
+        "
       >
         <div className="mb-8">
           <h1 className="text-4xl font-bold">
@@ -94,12 +83,12 @@ export default function LoginPage() {
         {error && (
           <div
             className="
-            bg-red-500/20
-            text-red-400
-            p-4
-            rounded-xl
-            mb-6
-          "
+              bg-red-500/20
+              text-red-400
+              p-4
+              rounded-xl
+              mb-6
+            "
           >
             {error}
           </div>
@@ -114,20 +103,16 @@ export default function LoginPage() {
             type="email"
             required
             value={email}
-            onChange={(e) =>
-              setEmail(
-                e.target.value
-              )
-            }
+            onChange={(e) => setEmail(e.target.value)}
             className="
-            w-full
-            p-4
-            rounded-xl
-            bg-white/5
-            border
-            border-white/10
-            outline-none
-          "
+              w-full
+              p-4
+              rounded-xl
+              bg-white/5
+              border
+              border-white/10
+              outline-none
+            "
           />
         </div>
 
@@ -140,34 +125,33 @@ export default function LoginPage() {
             type="password"
             required
             value={password}
-            onChange={(e) =>
-              setPassword(
-                e.target.value
-              )
-            }
+            onChange={(e) => setPassword(e.target.value)}
             className="
-            w-full
-            p-4
-            rounded-xl
-            bg-white/5
-            border
-            border-white/10
-            outline-none
-          "
+              w-full
+              p-4
+              rounded-xl
+              bg-white/5
+              border
+              border-white/10
+              outline-none
+            "
           />
         </div>
 
         <button
+          type="submit"
           disabled={loading}
           className="
-          w-full
-          bg-violet-600
-          hover:bg-violet-700
-          transition-all
-          p-4
-          rounded-xl
-          font-semibold
-        "
+            w-full
+            bg-slate-700
+            hover:bg-slate-600
+            transition-all
+            p-4
+            rounded-xl
+            font-semibold
+            disabled:opacity-50
+            disabled:cursor-not-allowed
+          "
         >
           {loading
             ? "Authenticating..."
@@ -175,5 +159,37 @@ export default function LoginPage() {
         </button>
       </form>
     </div>
+  );
+}
+
+function LoginLoading() {
+  return (
+    <div
+      className="
+        min-h-screen
+        flex
+        items-center
+        justify-center
+        p-6
+      "
+    >
+      <div className="glass w-full max-w-[420px] rounded-3xl p-8">
+        <div className="animate-pulse space-y-4">
+          <div className="h-10 w-32 rounded bg-white/10" />
+          <div className="h-4 w-56 rounded bg-white/10" />
+          <div className="h-12 rounded bg-white/10" />
+          <div className="h-12 rounded bg-white/10" />
+          <div className="h-12 rounded bg-white/10" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoginLoading />}>
+      <LoginForm />
+    </Suspense>
   );
 }

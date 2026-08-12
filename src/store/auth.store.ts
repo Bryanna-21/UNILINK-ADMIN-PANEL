@@ -1,52 +1,58 @@
 import { create } from "zustand";
 
-interface User {
+export interface AuthUser {
   id: string;
-
   email: string;
-
   role: string;
+  name?: string;
 }
 
 interface AuthStore {
-  user: User | null;
-
+  user: AuthUser | null;
   token: string | null;
-
-  setAuth: (
-    user: User,
-    token: string
-  ) => void;
-
+  setAuth: (user: AuthUser, token: string) => void;
+  setToken: (token: string) => void;
   logout: () => void;
 }
 
-export const useAuthStore =
-  create<AuthStore>((set) => ({
-    user: null,
+export const useAuthStore = create<AuthStore>((set) => ({
+  user: null,
+  token: null,
 
-    token: null,
+  setAuth: (user, token) => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("accessToken", token);
+      window.localStorage.setItem("authUser", JSON.stringify(user));
+      document.cookie = `accessToken=${encodeURIComponent(token)}; Path=/; SameSite=Lax`;
+    }
 
-    setAuth: (user, token) => {
-      localStorage.setItem(
-        "accessToken",
-        token
-      );
+    set({ user, token });
+  },
 
-      set({
-        user,
-        token,
-      });
-    },
+  setToken: (token) => {
+    let user: AuthUser | null = null;
 
-    logout: () => {
-      localStorage.removeItem(
-        "accessToken"
-      );
+    if (typeof window !== "undefined") {
+      const rawUser = window.localStorage.getItem("authUser");
+      if (rawUser) {
+        try {
+          user = JSON.parse(rawUser) as AuthUser;
+        } catch {
+          user = null;
+        }
+      }
+    }
 
-      set({
-        user: null,
-        token: null,
-      });
-    },
-  }));
+    set({ token, user });
+  },
+
+  logout: () => {
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem("accessToken");
+      window.localStorage.removeItem("authUser");
+      document.cookie = "accessToken=; Path=/; Max-Age=0; SameSite=Lax";
+    }
+
+    set({ user: null, token: null });
+  },
+}));

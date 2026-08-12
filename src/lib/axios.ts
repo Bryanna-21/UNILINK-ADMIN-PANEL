@@ -1,26 +1,36 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL:
-    process.env.NEXT_PUBLIC_API_URL,
-
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
 });
 
-api.interceptors.request.use(
-  (config) => {
-    const token =
-      localStorage.getItem(
-        "accessToken"
-      );
+api.interceptors.request.use((config) => {
+  if (typeof window !== "undefined") {
+    const token = window.localStorage.getItem("accessToken");
 
     if (token) {
-      config.headers.Authorization =
-        `Bearer ${token}`;
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+  }
+
+  return config;
+});
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (
+      typeof window !== "undefined" &&
+      error?.response?.status === 401
+    ) {
+      window.localStorage.removeItem("accessToken");
+      window.localStorage.removeItem("authUser");
+      document.cookie = "accessToken=; Path=/; Max-Age=0; SameSite=Lax";
     }
 
-    return config;
-  }
+    return Promise.reject(error);
+  },
 );
 
 export default api;

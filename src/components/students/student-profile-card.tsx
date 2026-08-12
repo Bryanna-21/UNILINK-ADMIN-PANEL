@@ -27,7 +27,7 @@ export default function StudentProfileCard({
           w-16
           h-16
           rounded-full
-          bg-violet-600
+          bg-slate-700
           flex
           items-center
           justify-center
