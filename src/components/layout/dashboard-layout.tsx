@@ -3,21 +3,13 @@
 import Sidebar from "./sidebar";
 import Topbar from "./topbar";
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex">
+    <div className="page-shell">
       <Sidebar />
-
-      <main className="ml-[270px] w-full p-6">
+      <main className="lg:ml-[264px] min-h-screen">
         <Topbar />
-
-        <div className="mt-6">
-          {children}
-        </div>
+        <div className="p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto">{children}</div>
       </main>
     </div>
   );

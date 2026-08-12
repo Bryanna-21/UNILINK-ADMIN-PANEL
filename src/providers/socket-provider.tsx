@@ -37,12 +37,10 @@ export default function SocketProvider({
 
     socket.on("admin-notification", handleNotification);
 
-return () => {
-  if (socket) {
-    socket.off("admin-notification", handleNotification);
-    socket.disconnect();
-  }
-};
+    return () => {
+      socket.off("admin-notification", handleNotification);
+      socket.disconnect();
+    };
   }, [addNotification, token]);
 
   return children;
