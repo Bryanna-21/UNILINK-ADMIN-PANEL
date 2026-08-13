@@ -1,15 +1,10 @@
+// Matches UNILINK-BACKEND's User model (see src/models/User.js).
 export interface User {
-  id: string;
-
+  _id: string;
   name: string;
-
   email: string;
-
-  role: string;
-
-  status: string;
-
-  university?: string;
-
-  createdAt?: string;
+  role: "student" | "lecturer" | "admin";
+  status: "active" | "suspended";
+  universityId?: string;
+  createdAt: string;
 }
