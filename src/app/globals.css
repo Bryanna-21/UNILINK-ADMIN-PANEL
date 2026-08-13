@@ -1,0 +1,166 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  UniLink Admin design tokens.
+  Deliberately not violet/purple (previous --primary: #7c3aed) — see
+  final report for the design rationale. Emerald reads as institutional
+  trust without defaulting to generic SaaS blue or AI-cliché palettes.
+*/
+:root,
+.dark {
+  --bg: #0b0f14;
+  --surface: #12181f;
+  --surface-raised: #1a222b;
+  --border: rgba(255, 255, 255, 0.08);
+  --ink: #e8ecef;
+  --ink-muted: #8b96a3;
+
+  --accent: #2e7d63;
+  --accent-bright: #3fa383;
+  --warn: #c98a3b;
+  --danger: #c1544a;
+}
+
+.light {
+  --bg: #f7f8f6;
+  --surface: #ffffff;
+  --surface-raised: #eef0ed;
+  --border: rgba(15, 23, 20, 0.1);
+  --ink: #1b211d;
+  --ink-muted: #5c6864;
+
+  --accent: #26694f;
+  --accent-bright: #2e7d63;
+  --warn: #a86a26;
+  --danger: #a8433a;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  font-family: var(--font-body), Inter, system-ui, sans-serif;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display), Georgia, serif;
+}
+
+/* Visible keyboard focus everywhere — section 27 accessibility floor.
+   Never rely on browser default outline alone, but never remove it
+   without replacing it either. */
+:focus-visible {
+  outline: 2px solid var(--accent-bright);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+/* Signature element: a left-edge status bar used consistently across
+   cards, table rows, and badges. One vocabulary for state everywhere
+   in the panel instead of scattered ad-hoc badge colors. */
+.status-edge {
+  position: relative;
+}
+.status-edge::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  border-radius: 3px 0 0 3px;
+  background: var(--ink-muted);
+}
+.status-edge[data-status="active"]::before,
+.status-edge[data-status="healthy"]::before,
+.status-edge[data-status="verified"]::before,
+.status-edge[data-status="resolved"]::before {
+  background: var(--accent-bright);
+}
+.status-edge[data-status="pending"]::before,
+.status-edge[data-status="degraded"]::before,
+.status-edge[data-status="open"]::before {
+  background: var(--warn);
+}
+.status-edge[data-status="suspended"]::before,
+.status-edge[data-status="offline"]::before,
+.status-edge[data-status="high"]::before {
+  background: var(--danger);
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 0.85rem;
+  border-radius: 10px;
+  color: var(--ink-muted);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.sidebar-link:hover {
+  background: var(--surface-raised);
+  color: var(--ink);
+}
+.sidebar-link[data-active="true"] {
+  background: var(--surface-raised);
+  color: var(--ink);
+  border-left: 3px solid var(--accent-bright);
+  padding-left: calc(0.85rem - 3px);
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #f2fbf7;
+  border-radius: 10px;
+  padding: 0.65rem 1.1rem;
+  font-weight: 600;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+.btn-primary:hover {
+  background: var(--accent-bright);
+}
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.input-field {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border-radius: 10px;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.input-field:focus {
+  border-color: var(--accent-bright);
+}
