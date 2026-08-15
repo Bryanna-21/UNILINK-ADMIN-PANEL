@@ -2,6 +2,7 @@ import api from "@/lib/axios";
 
 export interface StudentQueryParams {
   page?: number;
+  limit?: number;
   search?: string;
   status?: "active" | "suspended";
   universityId?: string;
