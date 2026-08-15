@@ -18,7 +18,7 @@ export default function ReportCard({ report, onSetStatus, isPending }: Props) {
     typeof report.userId === "object" && report.userId?.name ? report.userId.name : "Unknown user";
 
   return (
-    <div className="card p-6 status-edge" data-status={report.status === "high" ? "high" : report.status}>
+    <div className="card p-6 status-edge" data-status={report.priority === "high" ? "high" : report.status}>
       <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
