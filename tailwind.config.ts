@@ -19,9 +19,16 @@ const config: Config = {
         },
         warn: "var(--warn)",
         danger: "var(--danger)",
+        success: "var(--success)",
       },
       fontFamily: {
-        display: ["var(--font-display)", "serif"],
+        // Aliased to the same font as body text — the mobile app has
+        // no separate display face, just the platform system font
+        // throughout. Keeping this key (rather than removing it)
+        // means every existing font-display usage across the app
+        // becomes plain sans-serif automatically, without needing to
+        // hunt down and edit every component that references it.
+        display: ["var(--font-body)", "Inter", "system-ui", "sans-serif"],
         body: ["var(--font-body)", "sans-serif"],
         mono: ["var(--font-mono)", "monospace"],
       },
