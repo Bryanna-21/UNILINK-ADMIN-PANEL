@@ -9,7 +9,11 @@ export interface AuthUser {
   id: string;
   name: string;
   email: string;
-  role: "student" | "lecturer" | "admin";
+  role:
+  | "student"
+  | "lecturer"
+  | "admin"
+  | "superadmin";
   universityId?: string;
 }
 
