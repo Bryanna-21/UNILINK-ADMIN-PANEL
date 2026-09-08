@@ -22,7 +22,7 @@ import { useAuthStore } from "@/store/auth.store";
 interface NavLink {
   name: string;
   href: string;
-  icon: React.ComponentType<{ size: number }>;
+  icon: any;
   roles?: ("admin" | "superadmin")[];
   beta?: boolean;
 }
