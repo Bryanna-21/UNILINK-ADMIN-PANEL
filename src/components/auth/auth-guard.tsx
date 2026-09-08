@@ -32,7 +32,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    if (user.role !== "admin") {
+    if (user.role !== "admin" && user.role !== "superadmin") {
       router.replace("/unauthorized");
     }
   }, [hydrated, token, user, pathname, router]);
@@ -40,7 +40,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   // Nothing rendered until we're sure this is an authenticated admin —
   // this is what prevents a protected page's real content from
   // flashing on screen before the redirect fires.
-  if (!hydrated || !token || !user || user.role !== "admin") {
+  if (!hydrated || !token || !user || user.role !== "admin" && user.role !== "superadmin") {
     return (
       <div className="min-h-screen flex items-center justify-center bg-bg">
         <div className="h-8 w-8 rounded-full border-2 border-accent border-t-transparent animate-spin" />
