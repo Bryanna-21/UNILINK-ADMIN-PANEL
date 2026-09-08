@@ -14,7 +14,7 @@ import {
   HeartPulse,
   UserCog,
   BookOpen,
-  Building2,
+  Building2, UserCheck,
 } from "lucide-react";
 
 import { useAuthStore } from "@/store/auth.store";
@@ -30,6 +30,7 @@ interface NavLink {
 const adminLinks: NavLink[] = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Students", href: "/students", icon: GraduationCap },
+  { name: "Lecturers", href: "/lecturers", icon: UserCheck },
   { name: "Users", href: "/users", icon: UserCog },
   { name: "Universities", href: "/universities", icon: Building2 },
   { name: "Analytics", href: "/analytics", icon: BarChart3 },
@@ -45,6 +46,7 @@ const superadminLinks: NavLink[] = [
   { name: "Units", href: "/units", icon: BookOpen, beta: true },
   { name: "Universities", href: "/universities", icon: Building2 },
   { name: "Students", href: "/students", icon: GraduationCap },
+  { name: "Lecturers", href: "/lecturers", icon: UserCheck },
   { name: "Users", href: "/users", icon: Users },
   { name: "Analytics", href: "/analytics", icon: BarChart3 },
   { name: "Reports", href: "/reports", icon: ShieldAlert },
