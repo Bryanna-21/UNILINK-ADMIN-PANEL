@@ -10,15 +10,15 @@ import SkeletonCard from "@/components/loaders/skeleton-card";
 
 import { useReports, useSetReportStatus } from "@/hooks/use-reports";
 
-const statusTabs: { label: string; value: "open" | "resolved" | "dismissed" | undefined }[] = [
-  { label: "Open", value: "open" },
-  { label: "Resolved", value: "resolved" },
-  { label: "Dismissed", value: "dismissed" },
+const statusTabs: { label: string; value: "OPEN" | "RESOLVED" | "DISMISSED" | undefined }[] = [
+  { label: "Open", value: "OPEN" },
+  { label: "Resolved", value: "RESOLVED" },
+  { label: "Dismissed", value: "DISMISSED" },
   { label: "All", value: undefined },
 ];
 
 export default function ReportsPage() {
-  const [status, setStatus] = useState<"open" | "resolved" | "dismissed" | undefined>("open");
+  const [status, setStatus] = useState<"OPEN" | "RESOLVED" | "DISMISSED" | undefined>("OPEN");
   const { data, isLoading, error, refetch } = useReports(status);
   const statusMutation = useSetReportStatus();
 

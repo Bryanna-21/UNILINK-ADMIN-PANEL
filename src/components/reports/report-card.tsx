@@ -4,12 +4,12 @@ interface Props {
     type: string;
     message?: string;
     location?: string;
-    status: "open" | "resolved" | "dismissed";
+    status: "OPEN" | "ACKNOWLEDGED" | "RESPONDING" | "ESCALATED" | "RESOLVED" | "DISMISSED";
     priority: "low" | "medium" | "high";
     createdAt: string;
     userId?: { name?: string; email?: string } | string;
   };
-  onSetStatus: (status: "open" | "resolved" | "dismissed") => void;
+  onSetStatus: (status: "RESOLVED" | "DISMISSED") => void;
   isPending?: boolean;
 }
 
@@ -17,8 +17,15 @@ export default function ReportCard({ report, onSetStatus, isPending }: Props) {
   const reporterName =
     typeof report.userId === "object" && report.userId?.name ? report.userId.name : "Unknown user";
 
+  // globals.css' .status-edge[data-status="..."] selectors are lowercase
+  // (open/resolved/etc, same convention as the other status-edge users
+  // on this dashboard - university/lecturer status). Lowercasing only
+  // for this attribute keeps the real, uppercase EmergencyReport enum
+  // value everywhere else (comparisons below, the API call).
+  const statusEdgeValue = report.priority === "high" ? "high" : report.status.toLowerCase();
+
   return (
-    <div className="card p-6 status-edge" data-status={report.priority === "high" ? "high" : report.status}>
+    <div className="card p-6 status-edge" data-status={statusEdgeValue}>
       <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
@@ -39,9 +46,9 @@ export default function ReportCard({ report, onSetStatus, isPending }: Props) {
         </div>
 
         <div className="flex gap-2 shrink-0">
-          {report.status !== "resolved" && (
+          {report.status !== "RESOLVED" && (
             <button
-              onClick={() => onSetStatus("resolved")}
+              onClick={() => onSetStatus("RESOLVED")}
               disabled={isPending}
               className="px-4 py-2 rounded-lg bg-accent/15 text-accent-bright text-sm font-medium hover:bg-accent/25 disabled:opacity-50"
             >
@@ -49,9 +56,9 @@ export default function ReportCard({ report, onSetStatus, isPending }: Props) {
             </button>
           )}
 
-          {report.status !== "dismissed" && (
+          {report.status !== "DISMISSED" && (
             <button
-              onClick={() => onSetStatus("dismissed")}
+              onClick={() => onSetStatus("DISMISSED")}
               disabled={isPending}
               className="px-4 py-2 rounded-lg bg-surface-raised text-ink-muted text-sm font-medium hover:text-ink disabled:opacity-50"
             >
