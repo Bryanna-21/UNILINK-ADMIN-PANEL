@@ -29,10 +29,21 @@ export async function getReports(status?: ReportStatus) {
 
 // updateReportStatus (backend) only accepts moving a report to RESOLVED
 // or DISMISSED - not back to OPEN, and not to ACKNOWLEDGED/RESPONDING/
-// ESCALATED, which have their own dedicated endpoints
-// (acknowledgeReport, respondToReport, escalateReport) not wired up
-// here yet.
+// ESCALATED, which have their own dedicated endpoints below.
 export async function setReportStatus(reportId: string, status: "RESOLVED" | "DISMISSED") {
   const response = await api.patch(`/emergency/reports/${reportId}/status`, { status });
+  return response.data;
+}
+
+// PATCH /emergency/reports/:id/acknowledge - moves an OPEN report to ACKNOWLEDGED.
+export async function acknowledgeReport(reportId: string) {
+  const response = await api.patch(`/emergency/reports/${reportId}/acknowledge`);
+  return response.data;
+}
+
+// POST /emergency/reports/:id/respond - records an internal note (required) and moves
+// an OPEN or ACKNOWLEDGED report to RESPONDING.
+export async function respondToReport(reportId: string, note: string) {
+  const response = await api.post(`/emergency/reports/${reportId}/respond`, { note });
   return response.data;
 }

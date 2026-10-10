@@ -15,6 +15,9 @@ import {
   UserCog,
   BookOpen,
   Building2, UserCheck,
+  MapPin,
+  Layers,
+  Landmark,
 } from "lucide-react";
 
 import { useAuthStore } from "@/store/auth.store";
@@ -45,6 +48,9 @@ const superadminLinks: NavLink[] = [
   { name: "Admin Management", href: "/admins", icon: UserCog, beta: true },
   { name: "Units", href: "/units", icon: BookOpen, beta: true },
   { name: "Universities", href: "/universities", icon: Building2 },
+  { name: "Campuses", href: "/campuses", icon: MapPin, beta: true },
+  { name: "Faculties", href: "/faculties", icon: Layers, beta: true },
+  { name: "Departments", href: "/departments", icon: Landmark, beta: true },
   { name: "Students", href: "/students", icon: GraduationCap },
   { name: "Lecturers", href: "/lecturers", icon: UserCheck },
   { name: "Users", href: "/users", icon: Users },
