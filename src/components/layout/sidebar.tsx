@@ -18,6 +18,8 @@ import {
   MapPin,
   Layers,
   Landmark,
+  MessagesSquare,
+  KeyRound,
 } from "lucide-react";
 
 import { useAuthStore } from "@/store/auth.store";
@@ -41,6 +43,8 @@ const adminLinks: NavLink[] = [
   { name: "Audit Logs", href: "/audit-logs", icon: FileClock },
   { name: "Notifications", href: "/notifications", icon: Bell },
   { name: "System Health", href: "/system-health", icon: HeartPulse },
+  { name: "Staff Chat", href: "/staff-chat", icon: MessagesSquare, beta: true },
+  { name: "Change Password", href: "/change-password", icon: KeyRound },
 ];
 
 const superadminLinks: NavLink[] = [
@@ -59,6 +63,8 @@ const superadminLinks: NavLink[] = [
   { name: "Audit Logs", href: "/audit-logs", icon: FileClock },
   { name: "Notifications", href: "/notifications", icon: Bell },
   { name: "System Health", href: "/system-health", icon: HeartPulse },
+  { name: "Staff Chat", href: "/staff-chat", icon: MessagesSquare, beta: true },
+  { name: "Change Password", href: "/change-password", icon: KeyRound },
 ];
 
 export default function Sidebar() {
