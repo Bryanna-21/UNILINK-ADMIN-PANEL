@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { KeyRound } from "lucide-react";
 import DashboardLayout from "@/components/layout/dashboard-layout";
+import PasswordInput from "@/components/common/password-input";
 import api from "@/lib/axios";
 
 // Two steps, same as the app: 1) confirm your current password and choose a new one, which
@@ -23,6 +24,7 @@ export default function ChangePasswordPage() {
     setError("");
     if (next.length < 8) return setError("The new password must be at least 8 characters long.");
     if (next !== confirmNext) return setError("The new passwords do not match.");
+    if (next === current) return setError("The new password must be different from the current one.");
     setBusy(true);
     try {
       await api.post("/auth/request-password-change", {
@@ -68,15 +70,16 @@ export default function ChangePasswordPage() {
             <>
               <div>
                 <label className="block text-sm font-medium text-ink mb-2">Current password</label>
-                <input type="password" value={current} onChange={(e) => setCurrent(e.target.value)} className="input-field" autoComplete="current-password" />
+                <PasswordInput value={current} onChange={setCurrent} autoComplete="current-password" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-ink mb-2">New password</label>
-                <input type="password" value={next} onChange={(e) => setNext(e.target.value)} className="input-field" autoComplete="new-password" />
+                <PasswordInput value={next} onChange={setNext} autoComplete="new-password" />
+                <p className="text-xs text-ink-muted mt-1">At least 8 characters. Twelve or more is much safer.</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-ink mb-2">Confirm new password</label>
-                <input type="password" value={confirmNext} onChange={(e) => setConfirmNext(e.target.value)} className="input-field" autoComplete="new-password" />
+                <PasswordInput value={confirmNext} onChange={setConfirmNext} autoComplete="new-password" />
               </div>
               <button onClick={requestCode} disabled={busy || !current || !next || !confirmNext} className="btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50">
                 <KeyRound size={16} />
