@@ -32,25 +32,19 @@ export default function UnitsManagementPage() {
     universityId: "",
   });
 
-  // Redirect if not superadmin
-  if (user?.role !== "superadmin") {
-    return (
-      <DashboardLayout>
-        <div className="text-center py-12">
-          <BookOpen size={48} className="mx-auto mb-4 text-ink-muted opacity-50" />
-          <h2 className="text-xl font-semibold text-ink">Access Denied</h2>
-          <p className="text-ink-muted mt-2">Only superadmins can manage units.</p>
-        </div>
-      </DashboardLayout>
-    );
-  }
-
   const { data: units = [], isLoading } = useQuery({
     queryKey: ["units"],
+    enabled: user?.role === "superadmin",
     queryFn: async () => {
       const response = await api.get("/admin/units");
       return response.data.data || [];
     },
+  });
+
+  const { data: universityOptions = [] } = useQuery<any[]>({
+    queryKey: ["university-options"],
+    queryFn: async () => (await api.get("/admin/universities", { params: { limit: 100 } })).data.data || [],
+    enabled: user?.role === "superadmin",
   });
 
   const createMutation = useMutation({
@@ -115,6 +109,20 @@ export default function UnitsManagementPage() {
     setEditingUnit(null);
     setFormData({ code: "", name: "", description: "", credits: "3", universityId: "" });
   };
+
+  // The access check runs after every hook so the hook count never changes between renders.
+  // Redirect if not superadmin
+  if (user?.role !== "superadmin") {
+    return (
+      <DashboardLayout>
+        <div className="text-center py-12">
+          <BookOpen size={48} className="mx-auto mb-4 text-ink-muted opacity-50" />
+          <h2 className="text-xl font-semibold text-ink">Access Denied</h2>
+          <p className="text-ink-muted mt-2">Only superadmins can manage units.</p>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
@@ -266,13 +274,18 @@ export default function UnitsManagementPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-ink mb-2">University</label>
-                  <input
-                    type="text"
+                  <select
                     value={formData.universityId}
                     onChange={(e) => setFormData({ ...formData, universityId: e.target.value })}
                     className="input-field"
-                    placeholder="University ID"
-                  />
+                  >
+                    <option value="">Select a university...</option>
+                    {universityOptions.map((u: any) => (
+                      <option key={u.id ?? u._id} value={u.id ?? u._id}>
+                        {u.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
 

@@ -11,10 +11,7 @@ import api from "@/lib/axios";
 // lowercase open/resolved/dismissed this file used to send: OPEN,
 // ACKNOWLEDGED, RESPONDING, ESCALATED, RESOLVED, DISMISSED.
 //
-// Known backend limitation as of this writing: PATCH .../status only
-// accepts role "admin" - a logged-in superadmin using this same admin
-// panel would get a 403 from the backend itself. Flagged upstream,
-// not silently worked around here.
+// PATCH .../status accepts both admin and superadmin.
 export type ReportStatus = "OPEN" | "ACKNOWLEDGED" | "RESPONDING" | "ESCALATED" | "RESOLVED" | "DISMISSED";
 
 export async function getReports(status?: ReportStatus) {
