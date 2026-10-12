@@ -47,7 +47,7 @@ export default function LecturersPage() {
   });
   const { data: universities = [] } = useQuery<any[]>({
     queryKey: ["university-options"],
-    queryFn: async () => (await api.get("/admin/universities", { params: { limit: 100 } })).data.data || [],
+    queryFn: async () => (await api.get("/admin/options/universities")).data.data || [],
   });
   const { data, isLoading, error: loadError } = useQuery({
     queryKey: ["lecturers", page, debounced],
