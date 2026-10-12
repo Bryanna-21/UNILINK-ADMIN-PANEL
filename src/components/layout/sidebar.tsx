@@ -22,6 +22,7 @@ import {
   KeyRound,
   Megaphone,
   FileText,
+  Flag,
 } from "lucide-react";
 
 import { useAuthStore } from "@/store/auth.store";
@@ -44,6 +45,7 @@ const adminLinks: NavLink[] = [
   { name: "Reports", href: "/reports", icon: ShieldAlert },
   { name: "Announcements", href: "/announcements", icon: Megaphone },
   { name: "Posts", href: "/posts", icon: FileText },
+  { name: "Moderation", href: "/moderation", icon: Flag },
   { name: "Audit Logs", href: "/audit-logs", icon: FileClock },
   { name: "Notifications", href: "/notifications", icon: Bell },
   { name: "System Health", href: "/system-health", icon: HeartPulse },
@@ -66,6 +68,7 @@ const superadminLinks: NavLink[] = [
   { name: "Reports", href: "/reports", icon: ShieldAlert },
   { name: "Announcements", href: "/announcements", icon: Megaphone },
   { name: "Posts", href: "/posts", icon: FileText },
+  { name: "Moderation", href: "/moderation", icon: Flag },
   { name: "Audit Logs", href: "/audit-logs", icon: FileClock },
   { name: "Notifications", href: "/notifications", icon: Bell },
   { name: "System Health", href: "/system-health", icon: HeartPulse },
