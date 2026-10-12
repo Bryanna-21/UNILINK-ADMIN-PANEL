@@ -14,7 +14,7 @@ export default function FacultiesPage() {
       fields={[
         { key: "name", label: "Name", required: true },
         { key: "code", label: "Code" },
-        { key: "universityId", label: "University", ref: "/admin/universities", required: true },
+        { key: "universityId", label: "University", ref: "/admin/options/universities", required: true },
       ]}
       columns={[
         { label: "Name", keys: ["name"] },

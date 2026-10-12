@@ -14,7 +14,7 @@ export default function DepartmentsPage() {
       fields={[
         { key: "name", label: "Name", required: true },
         { key: "code", label: "Code" },
-        { key: "facultyId", label: "Faculty", ref: "/admin/faculties", required: true },
+        { key: "facultyId", label: "Faculty", ref: "/admin/options/faculties", required: true },
       ]}
       columns={[
         { label: "Name", keys: ["name"] },
