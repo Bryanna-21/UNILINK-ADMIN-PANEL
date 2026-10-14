@@ -24,6 +24,7 @@ import {
   FileText,
   Flag,
   Wallet,
+  CalendarDays,
 } from "lucide-react";
 
 import { useAuthStore } from "@/store/auth.store";
@@ -48,6 +49,7 @@ const adminLinks: NavLink[] = [
   { name: "Posts", href: "/posts", icon: FileText },
   { name: "Moderation", href: "/moderation", icon: Flag },
   { name: "Loans & Sponsorships", href: "/opportunities", icon: Wallet },
+  { name: "School Timetable", href: "/timetables", icon: CalendarDays },
   { name: "Audit Logs", href: "/audit-logs", icon: FileClock },
   { name: "Notifications", href: "/notifications", icon: Bell },
   { name: "System Health", href: "/system-health", icon: HeartPulse },
@@ -72,6 +74,7 @@ const superadminLinks: NavLink[] = [
   { name: "Posts", href: "/posts", icon: FileText },
   { name: "Moderation", href: "/moderation", icon: Flag },
   { name: "Loans & Sponsorships", href: "/opportunities", icon: Wallet },
+  { name: "School Timetable", href: "/timetables", icon: CalendarDays },
   { name: "Audit Logs", href: "/audit-logs", icon: FileClock },
   { name: "Notifications", href: "/notifications", icon: Bell },
   { name: "System Health", href: "/system-health", icon: HeartPulse },
