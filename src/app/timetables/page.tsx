@@ -60,7 +60,7 @@ export default function TimetablesPage() {
             <table className="w-full">
               <thead className="bg-surface-raised border-b border-border">
                 <tr>
-                  {["Title", "University", "Status", "Rows", "Lecturers' responses"].map((h) => (
+                  {["Title", "University", "Status", "Rows", "Responses"].map((h) => (
                     <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-ink-muted">
                       {h}
                     </th>
@@ -83,7 +83,15 @@ export default function TimetablesPage() {
                     </td>
                     <td className="px-4 py-3 text-sm text-ink-muted">{t.rows}</td>
                     <td className="px-4 py-3 text-sm text-ink-muted">
-                      {t.status === "draft" ? "—" : `${t.tally.approve} approve · ${t.tally.object} object · ${t.tally.pending} waiting`}
+                      {t.status === "draft" ? (
+                        "—"
+                      ) : (
+                        <>
+                          <span className="block">Lecturers: {t.tally.lecturer.approve} yes · {t.tally.lecturer.object} no · {t.tally.lecturer.pending} waiting</span>
+                          <span className="block">Students: {t.tally.student.approve} yes · {t.tally.student.object} no</span>
+                          <span className="block text-xs">{t.windowOpen ? `Open until ${new Date(t.suggestionsCloseAt).toLocaleDateString()}` : t.status === "published" ? "Window closed" : ""}</span>
+                        </>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -177,7 +185,12 @@ function Detail({ id, onClose, onEdit, onChanged }: { id: string; onClose: () =>
                 </button>
               )}
               {t.status === "published" && (
-                <button onClick={() => confirm("Finalize this timetable? Comments and voting close, and it can no longer be edited.") && run.mutate(act("finalize"))} disabled={run.isPending} className="btn-primary disabled:opacity-50">
+                <button
+                  onClick={() => confirm("Finalize this timetable? Comments and voting close, and it can no longer be edited.") && run.mutate(act("finalize"))}
+                  disabled={run.isPending || !t.canFinalize}
+                  title={t.canFinalize ? "" : `You can finalize once the suggestion window closes on ${new Date(t.finalizeBlockedUntil).toLocaleDateString()}`}
+                  className="btn-primary disabled:opacity-50"
+                >
                   Finalize
                 </button>
               )}
@@ -198,6 +211,14 @@ function Detail({ id, onClose, onEdit, onChanged }: { id: string; onClose: () =>
               </button>
             </div>
             {error && <p className="text-sm text-danger">{error}</p>}
+
+            {t.status === "published" && (
+              <p className="text-sm text-ink">
+                {t.windowOpen
+                  ? `Lecturers and students can respond until ${new Date(t.suggestionsCloseAt).toLocaleString()}. You can finalize after that.`
+                  : "The suggestion window has closed. You can finalize now, or edit the timetable to start a new round."}
+              </p>
+            )}
 
             {t.conflicts.length > 0 && (
               <div className="rounded-lg bg-warning/10 p-3 text-sm text-warning">
@@ -242,18 +263,27 @@ function Detail({ id, onClose, onEdit, onChanged }: { id: string; onClose: () =>
 
             {t.status !== "draft" && (
               <section>
-                <h3 className="text-sm font-semibold text-ink mb-2">
-                  Lecturers' responses to version {t.version}: {t.tally.approve} approve · {t.tally.object} object · {t.tally.pending} waiting
-                </h3>
-                <ul className="space-y-2">
-                  {t.responses.map((r: any) => (
-                    <li key={r.userId} className="text-sm">
-                      <span className={r.vote === "approve" ? "text-success font-medium" : "text-danger font-medium"}>{r.vote === "approve" ? "Approved" : "Objected"}</span> <span className="text-ink">{r.name}</span>
-                      {r.reason && <p className="text-ink-muted whitespace-pre-wrap">{r.reason}</p>}
-                    </li>
-                  ))}
-                </ul>
-                {t.pendingLecturers.length > 0 && <p className="text-xs text-ink-muted mt-3">Waiting on: {t.pendingLecturers.map((p: any) => p.name).join(", ")}</p>}
+                <h3 className="text-sm font-semibold text-ink mb-2">Responses to version {t.version}</h3>
+                {(["lecturer", "student"] as const).map((role) => {
+                  const tl = t.tally[role];
+                  const list = t.responses.filter((r: any) => r.role === role);
+                  return (
+                    <div key={role} className="mb-4">
+                      <p className="text-sm font-medium text-ink capitalize">
+                        {role}s: {tl.approve} approve · {tl.object} object · {tl.pending} haven't responded (of {role === "lecturer" ? t.lecturerCount : t.studentCount})
+                      </p>
+                      <ul className="space-y-2 mt-2">
+                        {list.map((r: any) => (
+                          <li key={r.userId} className="text-sm">
+                            <span className={r.vote === "approve" ? "text-success font-medium" : "text-danger font-medium"}>{r.vote === "approve" ? "Approved" : "Objected"}</span> <span className="text-ink">{r.name}</span>
+                            {r.reason && <p className="text-ink-muted whitespace-pre-wrap">{r.reason}</p>}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  );
+                })}
+                {t.pendingLecturers.length > 0 && <p className="text-xs text-ink-muted">Lecturers still to respond: {t.pendingLecturers.map((p: any) => p.name).join(", ")}</p>}
               </section>
             )}
 
@@ -268,6 +298,13 @@ function Detail({ id, onClose, onEdit, onChanged }: { id: string; onClose: () =>
                         {c.userName} ({c.role}) · v{c.version} · {new Date(c.createdAt).toLocaleString()}
                       </p>
                       <p className="text-ink whitespace-pre-wrap">{c.text}</p>
+                      <button
+                        onClick={() => confirm("Remove this comment for everyone?") && run.mutate(() => api.delete(`/admin/timetables/${id}/comments/${c.id}`))}
+                        disabled={run.isPending}
+                        className="text-xs text-ink-muted hover:text-danger"
+                      >
+                        Remove comment
+                      </button>
                     </li>
                   ))}
                 </ul>
@@ -353,7 +390,7 @@ function Editor({ id, onClose, onSaved }: { id: string | null; onClose: () => vo
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
       <div className="bg-surface rounded-card border border-border w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 space-y-4" role="dialog" aria-label="Timetable editor">
         <h2 className="text-xl font-display font-semibold text-ink">{id ? "Edit timetable" : "New timetable"}</h2>
-        {id && status === "published" && <p className="text-sm text-warning">This timetable is published. Saving starts a new version, and lecturers will need to vote again.</p>}
+        {id && status === "published" && <p className="text-sm text-warning">This timetable is published. Saving starts a new version, everyone is asked to vote again, and the window stays open for at least 7 more days.</p>}
         {!loaded ? (
           <p className="text-ink-muted">Loading...</p>
         ) : (
