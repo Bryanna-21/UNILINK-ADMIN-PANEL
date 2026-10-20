@@ -6,6 +6,8 @@ import DashboardLayout from "@/components/layout/dashboard-layout";
 import { useAuthStore } from "@/store/auth.store";
 import api from "@/lib/axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import Link from "next/link";
+import PenaltyForm from "@/components/moderation/penalty-form";
 
 // Moderation queue for content reports. Backend: /admin/moderation/reports (list, detail, assign,
 // note, escalate, resolve). Decisions are recorded with a full event trail. Acting on the content
@@ -48,6 +50,9 @@ export default function ModerationPage() {
         <div>
           <h1 className="text-3xl font-display font-semibold text-ink">Moderation</h1>
           <p className="text-ink-muted mt-1 text-sm">Reports from students. Most urgent first.</p>
+          <Link href="/penalties" className="text-sm text-accent hover:underline">
+            Penalties and appeals →
+          </Link>
         </div>
 
         <div className="flex gap-2">
@@ -282,6 +287,8 @@ function ReportDrawer({ id, isSuper, onClose, onChanged }: { id: string; isSuper
                     )}
                   </div>
                 </div>
+
+                {!lockedToSuper && report.reportedUser && <PenaltyForm report={report} reportId={id} isSuper={isSuper} onDone={refresh} />}
 
                 {!lockedToSuper && (
                   <div className="card p-4 space-y-3">
