@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { getSocket } from "@/services/socket";
 
@@ -18,6 +19,7 @@ export default function SocketProvider({
 }) {
   const addNotification = useNotificationStore((state) => state.addNotification);
   const token = useAuthStore((state) => state.token);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const socket = getSocket();
@@ -42,12 +44,20 @@ export default function SocketProvider({
 
     socket.on("admin-notification", handleNotification);
 
+    // A problem report arrived: the signal carries only an id, so refetch the (scoped) list and the badge.
+    const handleFeedback = () => {
+      queryClient.invalidateQueries({ queryKey: ["feedback"] });
+      queryClient.invalidateQueries({ queryKey: ["feedback-count"] });
+    };
+    socket.on("feedback:new", handleFeedback);
+
     return () => {
       socket.off("admin-notification", handleNotification);
+      socket.off("feedback:new", handleFeedback);
     };
     // Re-run when the token changes (login/logout), since that's when
     // the underlying socket connection is created/destroyed.
-  }, [addNotification, token]);
+  }, [addNotification, queryClient, token]);
 
   return children;
 }

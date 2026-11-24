@@ -26,9 +26,11 @@ import {
   Wallet,
   CalendarDays,
   Gavel,
+  Bug,
 } from "lucide-react";
 
 import { useAuthStore } from "@/store/auth.store";
+import { useFeedbackNewCount } from "@/hooks/use-feedback";
 
 interface NavLink {
   name: string;
@@ -46,6 +48,7 @@ const adminLinks: NavLink[] = [
   { name: "Universities", href: "/universities", icon: Building2 },
   { name: "Analytics", href: "/analytics", icon: BarChart3 },
   { name: "Reports", href: "/reports", icon: ShieldAlert },
+  { name: "Problem Reports", href: "/feedback", icon: Bug },
   { name: "Announcements", href: "/announcements", icon: Megaphone },
   { name: "Posts", href: "/posts", icon: FileText },
   { name: "Moderation", href: "/moderation", icon: Flag },
@@ -72,6 +75,7 @@ const superadminLinks: NavLink[] = [
   { name: "Users", href: "/users", icon: Users },
   { name: "Analytics", href: "/analytics", icon: BarChart3 },
   { name: "Reports", href: "/reports", icon: ShieldAlert },
+  { name: "Problem Reports", href: "/feedback", icon: Bug },
   { name: "Announcements", href: "/announcements", icon: Megaphone },
   { name: "Posts", href: "/posts", icon: FileText },
   { name: "Moderation", href: "/moderation", icon: Flag },
@@ -90,6 +94,8 @@ export default function Sidebar() {
   const user = useAuthStore((state) => state.user);
 
   const links = user?.role === "superadmin" ? superadminLinks : adminLinks;
+  // Reports still marked new, shown as a small badge on the Problem Reports link.
+  const { data: newFeedback } = useFeedbackNewCount(!!user);
 
   return (
     <aside className="w-[260px] h-screen bg-surface border-r border-border p-5 flex flex-col">
@@ -121,6 +127,11 @@ export default function Sidebar() {
               <Icon size={18} />
               <span className="text-sm">{link.name}</span>
               {link.beta && <span className="text-[10px] bg-accent/20 text-accent px-1 rounded ml-auto">NEW</span>}
+              {link.href === "/feedback" && !!newFeedback && newFeedback > 0 && (
+                <span className="text-[10px] bg-accent text-white px-1.5 py-0.5 rounded-full ml-auto" aria-label={`${newFeedback} new`}>
+                  {newFeedback > 99 ? "99+" : newFeedback}
+                </span>
+              )}
             </Link>
           );
         })}
